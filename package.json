@@ -1,0 +1,13 @@
+{
+  "name": "graph-gen",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "api": "yarn workspace graph-api start",
+    "front": "yarn workspace graph-front start",
+    "build": "yarn workspace graph-gen build",
+    "test": "yarn workspace graph-gen test"
+  }
+}
