@@ -7,36 +7,48 @@ const prisma = new PrismaClient();
 
 app.get('/', async (req: Request, res: Response) => {
   try {
-    const allGraphs = await prisma.graph.findMany();
+    const allGraphs = await prisma.graph.findMany({
+      where: {
+        isDeleted: false,
+      },
+    });
     res.json(allGraphs);
   } catch (e) {
-    console.log(e);
+    res.status(500).json({ error: e });
   }
 });
 
 app.put('/', async (req: Request, res: Response) => {
   try {
     const newGraph = await prisma.graph.create({
-      data: req.body,
+      data: {
+        from: req.body.from,
+        to: req.body.to,
+        weight: req.body.weight,
+      },
     });
-    res.json(newGraph);
+    res.json({success: true, data: newGraph});
   } catch (e) {
-    console.log(e);
+    res.status(500).json({ error: e });
   }
 });
 
 app.patch('/', async (req: Request, res: Response) => {
 try {
-    await prisma.graph.updateMany({
+    const all = await prisma.graph.updateMany({
       data: {
-        deleted: true,
+        isDeleted: true,
       },
+      where: {
+        isDeleted: false,
+      }
     });
+    res.json({success: true, data: all});
   } catch (e) {
-    console.log(e);
+    res.status(500).json({ error: e });
   }
 });
 
-app.listen(3003, () => {
-  console.log('Server started on http://localhost:3003');
+app.listen(process.env.PORT, () => {
+  console.log(`Server started on http://localhost:${process.env.PORT}`);
 });
